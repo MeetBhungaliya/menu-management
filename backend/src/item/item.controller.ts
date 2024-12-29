@@ -12,7 +12,8 @@ export class ItemController {
   @Post('create')
   @ApiOperation({
     summary: 'CREATE ITEM',
-    description: 'Public endpoint to Create a new Menu.',
+    description:
+      'Add a new item to the menu, either as a main item or a sub-item.',
   })
   @ApiResponse({ status: 201, description: 'Created', type: Item })
   @ApiResponse({ status: 400, description: 'Bad request' })

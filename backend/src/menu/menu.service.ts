@@ -15,12 +15,12 @@ export class MenuService {
 
   constructor(private prisma: PrismaService) {}
 
-  async get(dto: GetMenuDto) {
+  async get(menu_id: string) {
     this.logger.log(`GET: menu/: Get menu started`);
 
     try {
       const menu = await this.prisma.menu.findFirst({
-        where: { id: dto.menu_id },
+        where: { id: menu_id },
         select: {
           id: true,
           name: true,
@@ -28,7 +28,7 @@ export class MenuService {
       });
 
       const item = await this.prisma.item.findMany({
-        where: { ...dto, AND: { is_deleted: false } },
+        where: { menu_id, AND: { is_deleted: false } },
         select: {
           id: true,
           name: true,
@@ -40,7 +40,7 @@ export class MenuService {
 
       return { ...menu, children: buildHierarchy(item) };
     } catch (error) {
-      this.prismaErrorHanler(error, 'POST', dto.menu_id);
+      this.prismaErrorHanler(error, 'POST', menu_id);
       this.logger.error(`POST: error: ${error}`);
       throw new InternalServerErrorException('Server error');
     }

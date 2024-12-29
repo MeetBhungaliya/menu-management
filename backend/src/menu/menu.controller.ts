@@ -16,8 +16,10 @@ import {
 } from '@nestjs/swagger';
 import { MenuDto } from './dto/menu.dto';
 import { Menu } from './entities/menu.entity';
+import { CreateMenu } from './entities/create-menu.entity';
 import { MenuService } from './menu.service';
 import { GetMenuDto } from './dto/get-menu.dto';
+import { UpdateMenu } from './entities/update-menu.entity';
 
 @ApiBearerAuth()
 @ApiTags('Menu')
@@ -25,25 +27,25 @@ import { GetMenuDto } from './dto/get-menu.dto';
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
-  @Get()
+  @Get(':id')
   @ApiOperation({
     summary: 'GET MENU',
-    description: 'Public endpoint to Create a new Menu.',
+    description: 'Public endpoint to retrieve a menu based on menu_id.',
   })
-  @ApiResponse({ status: 201, description: 'Created', type: Menu })
+  @ApiResponse({ status: 200, description: 'Created', type: Menu })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Server error' })
-  getMenu(@Body() getMenuItemDto: GetMenuDto) {
-    return this.menuService.get(getMenuItemDto);
+  getMenu(@Param('id') menu_id: string) {
+    return this.menuService.get(menu_id);
   }
 
   @Post('create')
   @ApiOperation({
     summary: 'CREATE MENU',
-    description: 'Public endpoint to Create a new Menu.',
+    description: 'Endpoint to create a new menu item with a specified name.',
   })
-  @ApiResponse({ status: 201, description: 'Created', type: Menu })
+  @ApiResponse({ status: 201, description: 'Created', type: CreateMenu })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -53,11 +55,11 @@ export class MenuController {
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'UPDATE USER BY EMAIL',
+    summary: 'UPDATE MENU NAME',
     description:
-      'Private endpoint to update user data by email. <ul><li>The "user" role is permitted to update only their own information.</li><li>The "admin" role has the privilege to update information of any user</li><li>Only the "admin" role can update the "role" field</li></ul>',
+      'Endpoint is used to update the name of an existing menu by its unique ID.',
   })
-  @ApiResponse({ status: 200, description: 'Ok', type: Menu })
+  @ApiResponse({ status: 200, description: 'Ok', type: UpdateMenu })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -67,9 +69,9 @@ export class MenuController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'DELETE USER BY ID',
+    summary: 'DELETE MENU',
     description:
-      'Private endpoint to delete user by Id. <ul><li>The "user" role is permitted to remove only their own information.</li><li>The "admin" role has the privilege to delete any user</li></ul>',
+      'Endpoint is used to delete the name of an existing menu by its unique ID.',
   })
   @ApiOkResponse({
     content: { 'application/json': { example: { message: 'Menu deleted' } } },
