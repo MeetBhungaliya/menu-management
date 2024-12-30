@@ -10,6 +10,12 @@
 !.yarn/releases
 !.yarn/versions
 
+# package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
 # testing
 /coverage
 /.nyc_output
@@ -81,3 +87,13 @@ next-env.d.ts
 /frontend/node_modules
 /backend/dist
 /backend/node_modules
+
+/frontend/package-lock.json
+/frontend/yarn.lock
+/frontend/pnpm-lock.yaml
+/frontend/bun.lockb
+
+/backend/package-lock.json
+/backend/yarn.lock
+/backend/pnpm-lock.yaml
+/backend/bun.lockb
