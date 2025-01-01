@@ -1,31 +1,10 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Folder, LayoutGrid } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
+import Breadcrumb from './Breadcrumb';
 
 const index = () => {
   return (
     <>
-      <Breadcrumb className="py-[30px]">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">
-              <Folder className="stroke-[#D0D5DD] fill-[#D0D5DD]" />
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="text-[#D0D5DD]">
-            /
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <BreadcrumbPage className="font-medium">Menus</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <Breadcrumb />
 
       <div className=" py-4 flex items-center gap-x-4">
         <div className="size-[52px] rounded-full flex justify-center items-center bg-[#253BFF]">

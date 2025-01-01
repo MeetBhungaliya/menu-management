@@ -15,11 +15,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { MenuDto } from './dto/menu.dto';
-import { Menu } from './entities/menu.entity';
 import { CreateMenu } from './entities/create-menu.entity';
-import { MenuService } from './menu.service';
-import { GetMenuDto } from './dto/get-menu.dto';
 import { UpdateMenu } from './entities/update-menu.entity';
+import { MenuService } from './menu.service';
+import { GetMenu } from './entities/get-menu.entity';
 
 @ApiBearerAuth()
 @ApiTags('Menu')
@@ -27,17 +26,18 @@ import { UpdateMenu } from './entities/update-menu.entity';
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
-  @Get(':id')
+  @Get()
   @ApiOperation({
-    summary: 'GET MENU',
-    description: 'Public endpoint to retrieve a menu based on menu_id.',
+    summary: 'GET ALL MENUS',
+    description:
+      'Private endpoint to list all Users. It is allowed only by "admin" users.',
   })
-  @ApiResponse({ status: 200, description: 'Created', type: Menu })
-  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 200, description: 'Ok', type: GetMenu, isArray: true })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 500, description: 'Server error' })
-  getMenu(@Param('id') menu_id: string) {
-    return this.menuService.get(menu_id);
+  findAll() {
+    return this.menuService.findAll();
   }
 
   @Post('create')

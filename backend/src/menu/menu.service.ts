@@ -4,9 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { buildHierarchy } from 'src/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GetMenuDto } from './dto/get-menu.dto';
 import { MenuDto } from './dto/menu.dto';
 
 @Injectable()
@@ -15,33 +13,21 @@ export class MenuService {
 
   constructor(private prisma: PrismaService) {}
 
-  async get(menu_id: string) {
-    this.logger.log(`GET: menu/: Get menu started`);
+  async findAll() {
+    this.logger.log(`GET: menu/get: Get all menu`);
 
     try {
-      const menu = await this.prisma.menu.findFirst({
-        where: { id: menu_id },
+      const menus = await this.prisma.menu.findMany({
         select: {
           id: true,
           name: true,
         },
       });
 
-      const item = await this.prisma.item.findMany({
-        where: { menu_id, AND: { is_deleted: false } },
-        select: {
-          id: true,
-          name: true,
-          depth: true,
-          menu_id: true,
-          parent_id: true,
-        },
-      });
-
-      return { ...menu, children: buildHierarchy(item) };
+      return menus;
     } catch (error) {
-      this.prismaErrorHanler(error, 'POST', menu_id);
-      this.logger.error(`POST: error: ${error}`);
+      this.prismaErrorHanler(error, 'GET');
+      this.logger.error(`GET: error: ${error}`);
       throw new InternalServerErrorException('Server error');
     }
   }
@@ -86,6 +72,10 @@ export class MenuService {
 
   async remove(value: string) {
     try {
+      const deletedItems = await this.prisma.item.deleteMany({
+        where: { menu_id: value },
+      });
+
       const deletedMenu = await this.prisma.menu.delete({
         where: { id: value },
         select: {
@@ -93,7 +83,7 @@ export class MenuService {
           name: true,
         },
       });
-      return deletedMenu;
+      return { ...deletedMenu, items: deletedItems };
     } catch (error) {
       this.prismaErrorHanler(error, 'DELETE', value);
       this.logger.error(`DELETE: error: ${error}`);

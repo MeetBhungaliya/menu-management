@@ -1,7 +1,5 @@
 'use client';
 
-import { Check, ChevronDown } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -17,34 +15,27 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { Check, ChevronDown } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Menu } from './types';
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
+interface MenuSelectorProps {
+  data: Menu[];
+}
 
-const MenuSelector = () => {
+const MenuSelector = ({ data }: MenuSelectorProps) => {
+  const router = useRouter();
+  const { menuid } = useParams<{ menuid: string }>();
+
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(menuid ?? '');
+
+  const handleChange = (currentValue: string) => {
+    setValue(currentValue === value ? '' : currentValue);
+    setOpen(false);
+    router.push(currentValue);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,8 +47,8 @@ const MenuSelector = () => {
           className="w-full max-w-[350px] justify-between"
         >
           {value
-            ? frameworks.find(framework => framework.value === value)?.label
-            : 'Select framework...'}
+            ? data.find((menu: Menu) => menu.id === value)?.name
+            : 'Select menu...'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -66,26 +57,23 @@ const MenuSelector = () => {
         className="w-full max-w-[350px] p-0"
       >
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search menu..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No menu found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map(framework => (
+              {data.map((menu: Menu) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={currentValue => {
-                    setValue(currentValue === value ? '' : currentValue);
-                    setOpen(false);
-                  }}
+                  key={menu.id}
+                  value={menu.id}
+                  onSelect={handleChange}
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === framework.value ? 'opacity-100' : 'opacity-0'
+                      value === menu.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
-                  {framework.label}
+                  {menu.name}
                 </CommandItem>
               ))}
             </CommandGroup>

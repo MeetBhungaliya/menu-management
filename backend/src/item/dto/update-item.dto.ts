@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
-export class CreateItemDto {
+export class UpdateItemDto {
   @ApiProperty({
     description: 'The name of the item',
     example: 'Cheeseburger',
